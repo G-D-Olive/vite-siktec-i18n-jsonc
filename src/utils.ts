@@ -8,14 +8,14 @@ export async function processI18nFiles(
 ): Promise<void> {
     // Check if the input directory exists:
     const files = fs.readdirSync(inputDir).filter(f => f.endsWith('.json') || f.endsWith('.jsonc'));
-    console.log(`Processing ${files.length} files in ${inputDir}`);
-    console.log(`files:`, files);
+    // console.log(`Processing ${files.length} files in ${inputDir}`);
+    // console.log(`files:`, files);
     for (const file of files) {
         // if file is json or jsonc:
         if (file.endsWith('.json') || file.endsWith('.jsonc')) {
             // use the processI18nFile function to process each file
             const inputFile = path.join(inputDir, file);
-            console.log(`Processing file: ${file}`);
+            // console.log(`Processing file: ${file}`);
             await processI18nFile(inputFile, outputDir, true);
         }
     }
