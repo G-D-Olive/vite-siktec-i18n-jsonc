@@ -1,0 +1,33 @@
+{
+    // The section one:
+    "one": {
+        "key": {
+            "en" : "one value",
+            "he" : "one ערך"
+        },
+        "key2": {
+            "en" : "one value2",
+            "he" : "one ערך2",
+            "fr" : "one valeur3"
+        },
+        "key3": {
+            "nested": {
+                "en" : "one value3",
+                "he" : "one ערך3",
+                "fr" : "one valeur3"
+            }
+        }
+    },
+    "two": {
+        "key": {
+            "en" : "two value",
+            "he" : "two ערך",
+            "fr" : "one valeur3"
+        },
+        "key2": {
+            "en" : "two value2",
+            "he" : "two ערך2",
+            "fr" : "one valeur3"
+        }
+    }
+}
