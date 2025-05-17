@@ -1,0 +1,21 @@
+name: Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4  # v3 → v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - run: zip -r dist.zip dist
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist.zip
