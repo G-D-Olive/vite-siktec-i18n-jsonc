@@ -9,7 +9,7 @@ export interface I18nPluginOptions {
 export function i18nJsonPlugin(options: I18nPluginOptions = {}): Plugin {
     const inputPath = options.inputPath || 'src/i18n';
     const outputDir = options.outputDir || 'public/locales';
-    let singleFile : boolean = true;
+    let singleFile : boolean = false;
     // if its a file wrap it in an array:
     if (inputPath.endsWith('.jsonc') || inputPath.endsWith('.json')) {
         singleFile = true;
