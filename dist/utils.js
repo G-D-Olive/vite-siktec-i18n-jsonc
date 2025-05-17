@@ -9,14 +9,21 @@ const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const jsonc_parser_1 = require("jsonc-parser");
 async function processI18nFiles(inputDir, outputDir) {
+    // Check if the input directory exists:
     const files = fs_1.default.readdirSync(inputDir).filter(f => f.endsWith('.json') || f.endsWith('.jsonc'));
+    console.log(`Processing ${files.length} files in ${inputDir}`);
+    console.log(`files:`, files);
     for (const file of files) {
-        // use the processI18nFile function to process each file
-        const inputFile = path_1.default.join(inputDir, file);
-        await processI18nFile(inputFile, outputDir);
+        // if file is json or jsonc:
+        if (file.endsWith('.json') || file.endsWith('.jsonc')) {
+            // use the processI18nFile function to process each file
+            const inputFile = path_1.default.join(inputDir, file);
+            console.log(`Processing file: ${file}`);
+            await processI18nFile(inputFile, outputDir, true);
+        }
     }
 }
-function processI18nFile(inputFile, outputDir) {
+function processI18nFile(inputFile, outputDir, multi = false) {
     return new Promise((resolve, reject) => {
         // Read the input file:
         const content = fs_1.default.readFileSync(inputFile, 'utf-8');
@@ -55,7 +62,9 @@ function processI18nFile(inputFile, outputDir) {
         });
         // Create empty files with a s '{}' content: 
         files.forEach((file) => {
-            fs_1.default.writeFileSync(file, '{}', 'utf-8');
+            if (!fs_1.default.existsSync(file)) {
+                fs_1.default.writeFileSync(file, '{}', 'utf-8');
+            }
         });
         // Flatten the JSON object to paths:
         const flattened = flattenObjectToPaths(jsonData);
@@ -112,13 +121,14 @@ function processI18nFile(inputFile, outputDir) {
             }
         }
         // write a warning file with the warnings:
-        const warningFile = path_1.default.join(outputDir, 'warnings.log');
+        const file = path_1.default.basename(inputFile, path_1.default.extname(inputFile));
+        const warningFile = path_1.default.join(outputDir, `${file}.warnings.log`);
         if (warnings.length > 0) {
-            fs_1.default.writeFileSync(warningFile, warnings.join('\n'), 'utf-8');
+            fs_1.default.writeFileSync(warningFile, [`--- Warnings for ${inputFile} ---`, ...warnings].join('\n'), 'utf-8');
         }
         else {
             // If no warnings remove the file:
-            if (fs_1.default.existsSync(warningFile)) {
+            if (fs_1.default.existsSync(warningFile) && !multi) {
                 fs_1.default.unlinkSync(warningFile);
             }
         }

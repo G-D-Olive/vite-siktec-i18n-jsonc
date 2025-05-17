@@ -2,21 +2,29 @@ import fs from 'fs';
 import path from 'path';
 import { parse } from 'jsonc-parser';
 
-export async function processI18nFiles(inputDir: string, outputDir: string): Promise<void> {
-
-  const files = fs.readdirSync(inputDir).filter(f => f.endsWith('.json') || f.endsWith('.jsonc'));
-  
-  for (const file of files) {
-    // use the processI18nFile function to process each file
-    const inputFile = path.join(inputDir, file);
-    await processI18nFile(inputFile, outputDir);
-  }
-
+export async function processI18nFiles(
+    inputDir: string,
+    outputDir: string
+): Promise<void> {
+    // Check if the input directory exists:
+    const files = fs.readdirSync(inputDir).filter(f => f.endsWith('.json') || f.endsWith('.jsonc'));
+    console.log(`Processing ${files.length} files in ${inputDir}`);
+    console.log(`files:`, files);
+    for (const file of files) {
+        // if file is json or jsonc:
+        if (file.endsWith('.json') || file.endsWith('.jsonc')) {
+            // use the processI18nFile function to process each file
+            const inputFile = path.join(inputDir, file);
+            console.log(`Processing file: ${file}`);
+            await processI18nFile(inputFile, outputDir, true);
+        }
+    }
 }
 
 export function processI18nFile(
   inputFile: string,
-  outputDir: string
+  outputDir: string,
+  multi: boolean = false
 ): Promise<void> {
     return new Promise((resolve, reject) => {
 
@@ -64,7 +72,9 @@ export function processI18nFile(
 
         // Create empty files with a s '{}' content: 
         files.forEach((file) => {
-            fs.writeFileSync(file, '{}', 'utf-8');
+            if (!fs.existsSync(file)) {
+                fs.writeFileSync(file, '{}', 'utf-8');
+            }
         });
 
         // Flatten the JSON object to paths:
@@ -128,12 +138,17 @@ export function processI18nFile(
         }
 
         // write a warning file with the warnings:
-        const warningFile = path.join(outputDir, 'warnings.log');
+        const file = path.basename(inputFile, path.extname(inputFile));
+        const warningFile = path.join(outputDir, `${file}.warnings.log`);
         if (warnings.length > 0) {
-            fs.writeFileSync(warningFile, warnings.join('\n'), 'utf-8');
+            fs.writeFileSync(
+                warningFile, 
+                [`--- Warnings for ${inputFile} ---`, ...warnings].join('\n'), 
+                'utf-8'
+            );
         } else {
             // If no warnings remove the file:
-            if (fs.existsSync(warningFile)) {
+            if (fs.existsSync(warningFile) && !multi) {
                 fs.unlinkSync(warningFile);
             }
         }

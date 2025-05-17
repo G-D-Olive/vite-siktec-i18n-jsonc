@@ -1,0 +1,13 @@
+{    
+    "three": {
+        "key": {
+            "en" : "three value",
+            "he" : "three ערך",
+            "fr" : "three valeur3"
+        },
+        "key2": {
+            "en" : "three2 value2",
+            "he" : "three2 ערך2"
+        }
+    }
+}
