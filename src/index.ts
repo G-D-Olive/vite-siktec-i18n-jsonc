@@ -2,16 +2,16 @@ import { Plugin } from 'vite';
 import { processI18nFile, processI18nFiles } from './utils';
 
 export interface I18nPluginOptions {
-  inputDir?: string;
+  inputPath?: string;
   outputDir?: string;
 }
 
 export function i18nJsonPlugin(options: I18nPluginOptions = {}): Plugin {
-    const inputDir = options.inputDir || 'src/i18n';
+    const inputPath = options.inputPath || 'src/i18n';
     const outputDir = options.outputDir || 'public/locales';
     let singleFile : boolean = true;
     // if its a file wrap it in an array:
-    if (inputDir.endsWith('.jsonc') || inputDir.endsWith('.json')) {
+    if (inputPath.endsWith('.jsonc') || inputPath.endsWith('.json')) {
         singleFile = true;
     }
     // Return the plugin object:
@@ -22,9 +22,9 @@ export function i18nJsonPlugin(options: I18nPluginOptions = {}): Plugin {
         },
         async buildStart() {
             if (singleFile) {
-                await processI18nFile(inputDir, outputDir);
+                await processI18nFile(inputPath, outputDir);
             } else {
-                await processI18nFiles(inputDir, outputDir);
+                await processI18nFiles(inputPath, outputDir);
             }
         }
     };
