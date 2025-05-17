@@ -5,7 +5,7 @@ const utils_1 = require("./utils");
 function i18nJsonPlugin(options = {}) {
     const inputPath = options.inputPath || 'src/i18n';
     const outputDir = options.outputDir || 'public/locales';
-    let singleFile = true;
+    let singleFile = false;
     // if its a file wrap it in an array:
     if (inputPath.endsWith('.jsonc') || inputPath.endsWith('.json')) {
         singleFile = true;

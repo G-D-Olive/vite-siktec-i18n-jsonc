@@ -11,14 +11,14 @@ const jsonc_parser_1 = require("jsonc-parser");
 async function processI18nFiles(inputDir, outputDir) {
     // Check if the input directory exists:
     const files = fs_1.default.readdirSync(inputDir).filter(f => f.endsWith('.json') || f.endsWith('.jsonc'));
-    console.log(`Processing ${files.length} files in ${inputDir}`);
-    console.log(`files:`, files);
+    // console.log(`Processing ${files.length} files in ${inputDir}`);
+    // console.log(`files:`, files);
     for (const file of files) {
         // if file is json or jsonc:
         if (file.endsWith('.json') || file.endsWith('.jsonc')) {
             // use the processI18nFile function to process each file
             const inputFile = path_1.default.join(inputDir, file);
-            console.log(`Processing file: ${file}`);
+            // console.log(`Processing file: ${file}`);
             await processI18nFile(inputFile, outputDir, true);
         }
     }
