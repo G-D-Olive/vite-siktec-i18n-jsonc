@@ -9,6 +9,8 @@ const path_1 = __importDefault(require("path"));
 function i18nJsonPlugin(options = {}) {
     const inputPath = options.inputPath || 'src/i18n';
     const outputDir = options.outputDir || 'public/locales';
+    const hotUpdate = options.hotUpdate || false;
+    const debug = options.debug || false;
     const inputDir = inputPath.endsWith('.json') || inputPath.endsWith('.jsonc') ? path_1.default.dirname(inputPath) : inputPath;
     let singleFile = false;
     // if its a file wrap it in an array:
@@ -23,21 +25,39 @@ function i18nJsonPlugin(options = {}) {
         },
         async buildStart() {
             if (singleFile) {
+                if (debug) {
+                    console.log('i18n Processing single file:', inputPath);
+                }
                 await (0, utils_1.processI18nFile)(inputPath, outputDir);
             }
             else {
+                if (debug) {
+                    console.log('i18n Processing directory:', inputDir);
+                }
                 await (0, utils_1.processI18nFiles)(inputPath, outputDir);
             }
         },
         async handleHotUpdate(ctx) {
+            if (!hotUpdate) {
+                if (debug) {
+                    console.log('i18n Hot update disabled');
+                }
+                return;
+            }
             const changedDir = path_1.default.dirname(ctx.file);
             const changedFile = ctx.file;
             // is inputDir in the file path:
             if (singleFile && changedFile.endsWith(inputPath) || !singleFile && changedDir.endsWith(inputDir)) {
                 if (singleFile) {
+                    if (debug) {
+                        console.log('i18n file changed:', changedFile);
+                    }
                     await (0, utils_1.processI18nFile)(inputPath, outputDir);
                 }
                 else {
+                    if (debug) {
+                        console.log('i18n dir changed:', changedDir);
+                    }
                     await (0, utils_1.processI18nFiles)(inputPath, outputDir);
                 }
             }
